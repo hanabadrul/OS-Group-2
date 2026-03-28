@@ -24,17 +24,19 @@ Compile:
 gcc filename.c -o filename
 ```
 
-Run:
+Run (on mac):
 ```
 ./filename
 ```
-
+Run (on windows):
+```
+filename
+```
 ## 🤝 How to Contribute
 
 ### 1. Clone the Repository
 ```
 git clone https://github.com/hanabadrul/OS-Group-2.git
-
 cd OS-Group-2
 ```
 
