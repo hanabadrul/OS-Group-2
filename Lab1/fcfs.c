@@ -48,19 +48,31 @@ void display(int bt[], int wt[], int tat[], int n) {
 int main() {
     int n, i;
     
-    //prompt user to enter number of processes
-    printf("Enter number of processes: ");
-    scanf("%d", &n);
+    //prompt user to enter number of processes (must be positive)
+    do {
+        printf("Enter number of processes: ");
+        scanf("%d", &n);
+
+        if(n <= 0) {
+            printf("Invalid input. Please enter a positive number.\n");
+        }
+    } while(n <= 0);
 
     int bt[n], wt[n], tat[n];
     //bt[n] - burst time
     //wt[n] - waiting time
-    //tat[n] - turaround time
+    //tat[n] - turnaround time
 
-    //prompt the user to enter burst time for each process
+    //prompt the user to enter burst time for each process (must be non-negative)
     for(i = 0; i < n; i++) {
-        printf("Enter burst time for process %d: ", i + 1);
-        scanf("%d", &bt[i]);
+        do {
+            printf("Enter burst time for process (positive number) %d: ", i + 1);
+            scanf("%d", &bt[i]);
+
+            if(bt[i] < 0) {
+                printf("Invalid input. Burst time cannot be negative.\n");
+            }
+        } while(bt[i] < 0);
     }
 
     //function calls
