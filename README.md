@@ -4,10 +4,6 @@
 
 ### 1. Install Required Tools
 - Install **C compiler (Clang/GCC)**  
-  - Mac: Install Xcode Command Line Tools  
-    ```
-    xcode-select --install
-    ```
 - In VS Code, install:
   - **C/C++ Extension Pack**
   - **Code Runner** (by Jun Han)
