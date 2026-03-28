@@ -1,4 +1,4 @@
-# OS Lab Project
+# OS Lab
 
 ## 🛠️ Setup Guide (Using VS Code)
 
