@@ -24,14 +24,11 @@ Compile:
 gcc filename.c -o filename
 ```
 
-Run (on mac):
+Run:
 ```
 ./filename
 ```
-Run (on windows):
-```
-filename
-```
+
 ## 🤝 How to Contribute
 
 ### 1. Clone the Repository
