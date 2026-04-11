@@ -1,28 +1,42 @@
 #include <stdio.h>
 
 struct Directory {
-    char filename[20];
-    int start_index;
-    int length;
+    char filename[20]; // file identifier, max 19 chars + null terminator '\0'
+    int start_index; // first block occupied by this file on the disk
+    int length; // number of contiguous blocks the file occupies
 };
 
+// Prompts user for file info and validates input.
+// Returns 0 on success, 1 if allocation would collide or exceed bounds.
 int inputLoop(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
               int lastDirectory);
 
+// Checks if [start_index, start_index + length) overlaps any occupied block.
+// Returns 1 if collision detected, 0 if the range is free.
 int is_collide(int size, const int volume[size], int start_index, int length);
 
+// Marks all blocks in the file's range as occupied (1) in volume[].
 void sequentialAllocation(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
                           int lastDirectory);
 
+// Prints the raw block grid and the current directory table to stdout.
 void visualization(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
                    int lastDirectory);
 
 // filename start_index len
 int main() {
+    // Total number of blocks on the simulated disk
+    // Each index in volume[] represents one allocatable block
     const int size = 64;
     int volume[64] = {0};
+
+    // Maximum number of files the directory can track
+    // Simulates a fixed-size directory table (like FAT)
     int sizeDirectory = 10;
     struct Directory directoryTable[sizeDirectory] = {};
+
+    // Index of the next empty slot in directoryTable[]
+    // Acts as both a counter and a pointer to the last entry
     int lastDirectory = 0;
 
     while (1) {
@@ -56,7 +70,7 @@ int main() {
 int inputLoop(const int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
               const int lastDirectory) {
     printf("Enter the name of the files:");
-    scanf("%s", directoryTable[lastDirectory].filename);
+    scanf("%19s", directoryTable[lastDirectory].filename);
 
     int length = 0;
     do {
@@ -65,7 +79,10 @@ int inputLoop(const int size, int volume[size], int sizeDirectory, struct Direct
         if (length >= size) {
             printf("Length exceeds the limit.\n");
         }
-    } while (length >= size);
+        if (length <= 0) {
+            printf("Length must bigger than 0.\n");
+        }
+    } while (length >= size || length <= 0);
 
     int start_index = 0;
     printf("Enter the start index of files:");
