@@ -43,24 +43,31 @@ int main() {
         int menu;
         printf("Press 1 to Add a File. Press 2 to Exit.");
         scanf("%d", &menu);
+
+        // Any input other than 1 exits the simulation
         if (menu != 1) {
             break;
         }
 
+        // Guard: prevent writing beyond the directory table bounds
         if (lastDirectory >= sizeDirectory) {
             printf("Directory exceeds the limit.\n");
             break;
         }
 
+        // Get and validate user input; skip allocation if input is invalid
         if (inputLoop(size, volume, sizeDirectory, directoryTable, lastDirectory) == 1) {
             continue;
         }
 
+        // Allocate the file contiguously on the disk and confirm to user
         sequentialAllocation(size, volume, sizeDirectory, directoryTable, lastDirectory);
         printf("Files %s Allocated.\n", directoryTable[lastDirectory].filename);
 
+        // Advance to the next free directory slot
         lastDirectory++;
 
+        // Show updated disk state after each successful allocation
         visualization(size, volume, sizeDirectory, directoryTable, lastDirectory);
     }
 
