@@ -16,12 +16,10 @@ int inputLoop(int size, int volume[size], int sizeDirectory, struct Directory di
 int is_collide(int size, const int volume[size], int start_index, int length);
 
 // Marks all blocks in the file's range as occupied (1) in volume[].
-void sequentialAllocation(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
-                          int lastDirectory);
+void sequentialAllocation(int size, int volume[size], struct Directory directoryTable[], int lastDirectory);
 
 // Prints the raw block grid and the current directory table to stdout.
-void visualization(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
-                   int lastDirectory);
+void visualization(int size, int volume[size], struct Directory directoryTable[], int lastDirectory);
 
 // filename start_index len
 int main() {
@@ -49,26 +47,20 @@ int main() {
             break;
         }
 
-        // Guard: prevent writing beyond the directory table bounds
-        if (lastDirectory >= sizeDirectory) {
-            printf("Directory exceeds the limit.\n");
-            break;
-        }
-
         // Get and validate user input; skip allocation if input is invalid
         if (inputLoop(size, volume, sizeDirectory, directoryTable, lastDirectory) == 1) {
             continue;
         }
 
         // Allocate the file contiguously on the disk and confirm to user
-        sequentialAllocation(size, volume, sizeDirectory, directoryTable, lastDirectory);
+        sequentialAllocation(size, volume, directoryTable, lastDirectory);
         printf("Files %s Allocated.\n", directoryTable[lastDirectory].filename);
 
         // Advance to the next free directory slot
         lastDirectory++;
 
         // Show updated disk state after each successful allocation
-        visualization(size, volume, sizeDirectory, directoryTable, lastDirectory);
+        visualization(size, volume, directoryTable, lastDirectory);
     }
 
     return 0;
@@ -76,9 +68,18 @@ int main() {
 
 int inputLoop(const int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
               const int lastDirectory) {
+
+    // Guard: prevent writing beyond the directory table bounds
+    if (lastDirectory >= sizeDirectory) {
+        printf("Directory exceeds the limit.\n");
+        return 1;
+    }
+
+    // get filename from user
     printf("Enter the name of the files:");
     scanf("%19s", directoryTable[lastDirectory].filename);
 
+    // keep prompting until user enters a valid length (1 to size-1)
     int length = 0;
     do {
         printf("Enter the length of the files:");
@@ -91,15 +92,18 @@ int inputLoop(const int size, int volume[size], int sizeDirectory, struct Direct
         }
     } while (length >= size || length <= 0); // keep prompting until valid length
 
+    // get starting block from user
     int start_index = 0;
     printf("Enter the start index of files:");
     scanf("%d", &start_index);
 
+    // check if the requested range overlaps existing files or exceeds disk
     if (is_collide(size, volume, start_index, length)) {
         printf("Failed to allocate.\n");
         return 1; // abort — let caller decide to retry
     }
 
+    // commit validated input into the directory entry
     directoryTable[lastDirectory].length = length;
     directoryTable[lastDirectory].start_index = start_index;
 
@@ -115,8 +119,7 @@ int is_collide(const int size, const int volume[size], const int start_index, co
     return 0;
 }
 
-void sequentialAllocation(int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
-                          const int lastDirectory) {
+void sequentialAllocation(int size, int volume[size], struct Directory directoryTable[], const int lastDirectory) {
     // mark each block in the file's range as occupied
     for (int i = directoryTable[lastDirectory].start_index;
          i < directoryTable[lastDirectory].start_index + directoryTable[lastDirectory].length; i++) {
@@ -124,8 +127,7 @@ void sequentialAllocation(int size, int volume[size], int sizeDirectory, struct 
     }
 }
 
-void visualization(const int size, int volume[size], int sizeDirectory, struct Directory directoryTable[sizeDirectory],
-                   const int lastDirectory) {
+void visualization(const int size, int volume[size], struct Directory directoryTable[], const int lastDirectory) {
     printf("Volume Visualization: \n");
     for (int i = 0; i < size; i++) {
         printf("%d ", volume[i]);
