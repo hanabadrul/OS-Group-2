@@ -2,7 +2,7 @@
 #define MAX 25
 
 int main() {
-    int fragment[MAX], b[MAX], p[MAX], pf[MAX];
+    int fragment[MAX]={0}, b[MAX], p[MAX], pf[MAX]={0};
     int nb, np;
     static int barray[MAX];
 
