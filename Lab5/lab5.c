@@ -2,9 +2,9 @@
 #define MAX 25
 
 int main() {
-    int fragment[MAX], b[MAX], p[MAX], bf[MAX], pf[MAX];
-    int nb, np, temp, lowest = 9999;
-    static int barray[MAX], parray[MAX];
+    int fragment[MAX]={0}, b[MAX], p[MAX], pf[MAX]={0};
+    int nb, np;
+    static int barray[MAX];
 
     printf("\n\t\t-------- FIRST FIT MEMORY ALLOCATION --------\n");
 
