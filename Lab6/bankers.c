@@ -39,16 +39,25 @@ int main() {
     // what's the most each process will ever need?
     printf("\nEnter Max matrix (%d x %d):\n", n, r);
     for (i = 0; i < n; i++) {
-        printf("P%d: ", i);
-        for (j = 0; j < r; j++) {
-            if (scanf("%d", &max[i][j]) != 1 || max[i][j] < 0) {
-                printf("Error: max values must be non-negative integers.\n");
-                return 1;
-            }
-            // a process can't have claimed more than it will ever need
-            if (max[i][j] < alloc[i][j]) {
-                printf("Error: max[%d][%d] cannot be less than alloc[%d][%d].\n", i, j, i, j);
-                return 1;
+        int valid = 0;
+        while (!valid) {
+            printf("P%d: ", i);
+            valid = 1;
+            for (j = 0; j < r; j++) {
+                if (scanf("%d", &max[i][j]) != 1 || max[i][j] < 0) {
+                    printf("Error: max values must be non-negative integers. Re-enter row.\n");
+                    // flush leftover input
+                    while (getchar() != '\n');
+                    valid = 0;
+                    break;
+                }
+                if (max[i][j] < alloc[i][j]) {
+                    printf("Error: max[%d][%d] cannot be less than alloc[%d][%d]. Re-enter row.\n", i, j, i, j);
+                    // flush leftover input
+                    while (getchar() != '\n');
+                    valid = 0;
+                    break;
+                }
             }
         }
     }
